@@ -15,8 +15,16 @@ public:
     explicit Login2(QWidget *parent = 0);
     ~Login2();
 
+signals:
+    void sendauth(QString user, QString pw);
+
+private slots:
+    void accept();
+    void validinput();
+
 private:
     Ui::Login2 *ui;
+
 };
 
 #endif // LOGIN2_H

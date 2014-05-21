@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,8 +14,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    login2.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    login2.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    login2.ui
+
+OTHER_FILES += \
+    ReadMe.md
