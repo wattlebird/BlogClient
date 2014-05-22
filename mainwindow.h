@@ -2,8 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtNetwork/QNetworkAccessManager>
-
+#include <QtNetwork>
 #include "login2.h"
 
 namespace Ui {
@@ -19,17 +18,24 @@ public:
     ~MainWindow();
 
 
+signals:
+
+
 private slots:
     void login();
     void logout();
     void getauth(QString user, QString pw);
+    void getauthreply();
 
 private:
-    Ui::MainWindow *ui;
-    QNetworkAccessManager netManager;
-    Login2* dlgLogin;
 
-public:
+
+    Ui::MainWindow *ui;
+    QNetworkAccessManager *netManager;
+    QNetworkReply *reply;
+    QNetworkCookieJar *cookies;
+    Login2 *dlgLogin;
+
     QString strUser;
     QString strPw;
 };

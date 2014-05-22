@@ -22,5 +22,6 @@ void Login2::validinput(){
 
 void Login2::accept(){
     emit sendauth(ui->username->text(), ui->password->text());
+
     QDialog::accept();
 }
