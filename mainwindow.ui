@@ -49,10 +49,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>TextLabel</string>
+      <string>Title</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit">
+    <widget class="QLineEdit" name="lineTitle">
      <property name="geometry">
       <rect>
        <x>110</x>
@@ -72,10 +72,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>TextLabel</string>
+      <string>Content</string>
      </property>
     </widget>
-    <widget class="QTextEdit" name="textEdit">
+    <widget class="QTextEdit" name="textContent">
      <property name="geometry">
       <rect>
        <x>110</x>
@@ -85,7 +85,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="btnPush">
      <property name="geometry">
       <rect>
        <x>20</x>

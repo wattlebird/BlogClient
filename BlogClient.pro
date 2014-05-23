@@ -15,10 +15,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    login2.cpp
+    login2.cpp \
+    cookiejar.cpp
 
 HEADERS  += mainwindow.h \
-    login2.h
+    login2.h \
+    cookiejar.h
 
 FORMS    += mainwindow.ui \
     login2.ui

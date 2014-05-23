@@ -1,22 +1,23 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QByteArray>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     netManager(new QNetworkAccessManager(this)),
-    cookies(new QNetworkCookieJar(this)),
-    dlgLogin(new Login2(this))
+    cookies(new CookieJar(this)),
+    dlgLogin(new Login2(this)),
+    labelCurrentStatus(new QLabel("Unlogged."))
 {
     ui->setupUi(this);
     ui->actionLogout->setEnabled(false);
     netManager->setCookieJar(cookies);
-    ui->statusBar->showMessage(QString("Unlogged."));
+    ui->statusBar->addWidget(labelCurrentStatus);
+
     connect(dlgLogin, SIGNAL(sendauth(QString,QString)), this, SLOT(getauth(QString,QString)));
-    //connect(this, SIGNAL(logging()), this, SLOT(statusToLogging()));
-    //connect(this, SIGNAL(logged()), this, SLOT(statusToLogged()));
-    //connect(this, SIGNAL(unlogged()), this, SLOT(statusToUnlogged()));
+    connect(ui->btnPush, SIGNAL(clicked()), this, SLOT(pusharticle()));
 
 }
 
@@ -26,7 +27,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::login(){
-	ui->statusBar->showMessage(QString("Logging..."));
+    labelCurrentStatus->setText("Logging...");
     int rt = dlgLogin->exec();
     if(rt){
         //Need to connect to internet!
@@ -41,13 +42,13 @@ void MainWindow::login(){
     }else{
         ui->actionLogout->setEnabled(false);
         ui->actionLogin->setEnabled(true);
-		ui->statusBar->showMessage(QString("Unlogged."));
+        labelCurrentStatus->setText("Unlogged.");
 	}
 }
 
 void MainWindow::logout(){
-    ui->actionLogout->setEnabled(false);
-    ui->actionLogin->setEnabled(true);
+    reply = netManager->get(QNetworkRequest(QUrl("http://ikewikipage.appspot.com/logout")));
+    connect(reply,SIGNAL(finished()),this,SLOT(getlogoutreply()));
 }
 
 void MainWindow::getauth(QString user, QString pw){
@@ -57,22 +58,62 @@ void MainWindow::getauth(QString user, QString pw){
 
 void MainWindow::getauthreply(){
     if(reply->error()==QNetworkReply::NoError){
-        QNetworkCookie cookie;
-        bool bCookieexist = false;
-        QList<QNetworkCookie> cookieslist = cookies->cookiesForUrl(QUrl("http://ikewikipage.appspot.com/login"));
-        foreach(cookie, cookieslist){
-            if(cookie.name()=="user") bCookieexist = true;
-            break;
-        }
-		if(bCookieexist){
-			ui->statusBar->showMessage(QString("Successfully logged in."));
+        QString username;
+        if(cookies->checkUser(username) && username==strUser){
+            labelCurrentStatus->setText(QString("Successfully logged in as %1.").arg(strUser));
 			ui->actionLogout->setEnabled(true);
 			ui->actionLogin->setEnabled(false);
 		}else{
-			ui->statusBar->showMessage(QString("Unlogged."));
+            labelCurrentStatus->setText("Unlogged.");
 		}
     }else{
-		ui->statusBar->showMessage(QString("Unlogged."));
+        labelCurrentStatus->setText("Unlogged.");
 	}
+    disconnect(reply,SIGNAL(finished()),this,SLOT(getauthreply()));
+}
 
+void MainWindow::getlogoutreply(){
+    if(reply->error()==QNetworkReply::NoError){
+        ui->actionLogout->setEnabled(false);
+        ui->actionLogin->setEnabled(true);
+        labelCurrentStatus->setText("Unlogged.");
+    }
+    disconnect(reply,SIGNAL(finished()),this,SLOT(getlogoutreply()));
+}
+
+void MainWindow::pusharticle(){
+    QString title = ui->lineTitle->text();
+    QString content = ui->textContent->toPlainText();
+
+    if(title.isEmpty() || content.isEmpty()){
+        QMessageBox(QMessageBox::Warning, "BlogClient", "Neither the content nor the title can be empty.",
+                    QMessageBox::Ok).exec();
+        if (title.isEmpty()) ui->lineTitle->setFocus();
+        else if (content.isEmpty()) ui->textContent->setFocus();
+        return;
+    }
+
+    QString username;
+    if(!cookies->checkUser(username)){
+        login();
+        return;
+    }else if(username!=strUser){
+        QMessageBox(QMessageBox::Warning, "BlogClient", "There is a conflict between cookie and program.please debug.",
+                    QMessageBox::Ok).exec();
+        return;
+    }
+
+    QNetworkRequest request(QUrl(QString("http://ikewikipage.appspot.com/_edit/%1").arg(title)));
+    QByteArray postdata("content=");
+    postdata.append(content);
+    reply = netManager->post(request, postdata);
+    connect(reply, SIGNAL(finished()), this, SLOT(pusharticlereply()));
+}
+
+void MainWindow::pusharticlereply(){
+    if(reply->error()==QNetworkReply::NoError){
+        QMessageBox(QMessageBox::Warning, "BlogClient", "Post succeed. Please check the log.",
+                    QMessageBox::Ok).exec();
+    }
+    disconnect(reply,SIGNAL(finished()),this,SLOT(pusharticlereply()));
 }

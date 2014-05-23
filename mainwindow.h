@@ -3,7 +3,9 @@
 
 #include <QMainWindow>
 #include <QtNetwork>
+#include <QLabel>
 #include "login2.h"
+#include "cookiejar.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +28,9 @@ private slots:
     void logout();
     void getauth(QString user, QString pw);
     void getauthreply();
+    void getlogoutreply();
+    void pusharticle();
+    void pusharticlereply();
 
 private:
 
@@ -33,8 +38,9 @@ private:
     Ui::MainWindow *ui;
     QNetworkAccessManager *netManager;
     QNetworkReply *reply;
-    QNetworkCookieJar *cookies;
+    CookieJar *cookies;
     Login2 *dlgLogin;
+    QLabel *labelCurrentStatus;
 
     QString strUser;
     QString strPw;
