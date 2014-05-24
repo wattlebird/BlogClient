@@ -2,3 +2,4 @@ BlogClient*
 Debug/
 GeneratedFiles/
 x64/
+*.pyc
