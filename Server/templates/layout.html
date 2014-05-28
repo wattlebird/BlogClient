@@ -14,7 +14,11 @@
 					A class project
 				</div>
 				<div id="autharea">
+					{% if user %}
+					{{user}}(<a href="#">注销</a>)
+					{% else %}
 					<a href="#">登录</a>
+					{% endif %}
 				</div>
 			</div>
 		</div>

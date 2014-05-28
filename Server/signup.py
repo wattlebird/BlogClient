@@ -10,10 +10,7 @@ class SignupHandler(head.BasicHandler):
                 cookie_page = self.request.cookies.get('prev')
                 if cookie_val:
                         if secure.check_secure_val(cookie_val):
-                                if cookie_page and secure.check_secure_val(cookie_page):
-                                        self.redirect('/%s'%cookie_page.split('|')[0])
-                                else:
-                                        self.redirect('/')
+                                webapp2.redirect(self.request.referer)
                         else:
                                 self.response.delete_cookie('user')
 
@@ -63,11 +60,7 @@ class SignupHandler(head.BasicHandler):
                 	cookie_val = secure.make_secure_val(username)
                 	self.response.set_cookie('user', cookie_val)
                         cookie_page = self.request.cookies.get('prev')
-                        if cookie_page and secure.check_secure_val(cookie_page):
-                                previous_page = cookie_page.split('|')[0]
-                                self.redirect('/%s'%previous_page)
-                        else:
-                                self.redirect('/')
+                        self.redirect('/')
 
 
 app = webapp2.WSGIApplication([

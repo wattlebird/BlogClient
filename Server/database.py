@@ -9,13 +9,9 @@ class Users(ndb.Model):
     hashed_password = ndb.StringProperty(required = True)
     email = ndb.StringProperty()
 
-
-
-
-
 class Post(ndb.Model):
     title = ndb.StringProperty(required = True)
     body = ndb.TextProperty(required = True)
-    version = ndb.IntegerProperty(required = True)
+    author = ndb.StringProperty(required = True)
     created = ndb.DateTimeProperty(auto_now_add = True)
 
