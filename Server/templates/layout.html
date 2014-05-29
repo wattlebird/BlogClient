@@ -10,34 +10,21 @@
 		<div class="headline">
 			<div class="wrap">
 				<div id="logo">
-					<a href="#">Free Wiki</a>
+					<a href="/">Free Wiki</a>
 					A class project
 				</div>
 				<div id="autharea">
 					{% if user %}
-					{{user}}(<a href="#">注销</a>)
+					{{user}}(<a href="/logout">注销</a>)
 					{% else %}
-					<a href="#">登录</a>
+					<a href="/login">登录</a>|<a href="/signup">注册</a>
 					{% endif %}
 				</div>
 			</div>
 		</div>
 		<div class="mainfold wrap">
-			<div class="leftside">
-				<ul>
-					<li><a href="#">使用方法</a></li>
-					<li><a href="#">关于</a></li>
-				</ul>
-			</div>
-			<div class="main">
-				<div id="header">
-					<div id="title">我是标题</div>
-					<div id="operation">可操作</div>
-				</div>
-				<div id="text">
-				我是内容
-				</div>
-			</div>
+			{% block maintext %}
+			{% endblock %}
 		</div>
 	</body>
 </html>

@@ -4,3 +4,4 @@ GeneratedFiles/
 x64/
 *.pyc
 image/
+Server/templates/template.html

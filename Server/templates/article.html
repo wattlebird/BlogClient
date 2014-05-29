@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block maintext %}
+<div class="leftside">
+	<ul>
+		<li><a href="#">使用方法</a></li>
+		<li><a href="#">关于</a></li>
+	</ul>
+</div>
+<div class="main">
+	<div id="header">
+		<div id="title">{{title}}</div>
+		<div id="operation">
+		{% if user %}
+		<a href="/_edit/{{title}}">编辑页面</a>
+		{% endif %}
+		</div>
+	</div>
+	<div id="text">
+	{{content|safe}}
+	</div>
+</div>
+{% endblock %}

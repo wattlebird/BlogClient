@@ -19,21 +19,64 @@
 			</div>
 		</div>
 		<div class="mainfold wrap">
-			<div class="leftside">
-				<ul>
-					<li><a href="#">使用方法</a></li>
-					<li><a href="#">关于</a></li>
-				</ul>
+			<div class = "signup">
+				<h2>Sign Up</h2>
+				<form method="post">
+			      <table>
+			        <tr>
+			          <td class="label">
+			            Username
+			          </td>
+			          <td>
+			            <input type="text" name="username" value="{{username}}">
+			          </td>
+			          <td class="error">
+			            {{error_username}}
+			          </td>
+			        </tr>
+
+			        <tr>
+			          <td class="label">
+			            Password
+			          </td>
+			          <td>
+			            <input type="password" name="password" value="">
+			          </td>
+			          <td class="error">
+			            {{error_password}}
+			          </td>
+			        </tr>
+
+			        <tr>
+			          <td class="label">
+			            Verify Password
+			          </td>
+			          <td>
+			            <input type="password" name="verify" value="">
+			          </td>
+			          <td class="error">
+			            {{error_verify}}
+			          </td>
+			        </tr>
+
+			        <tr>
+			          <td class="label">
+			            Email (optional)
+			          </td>
+			          <td>
+			            <input type="text" name="email" value="{{email}}">
+			          </td>
+			          <td class="error">
+			            {{error_email}}
+			          </td>
+			        </tr>
+			      </table>
+
+			      <input type="submit">
+			    </form>
 			</div>
-			<div class="main">
-				<div id="header">
-					<div id="title">我是标题</div>
-					<div id="operation">可操作</div>
-				</div>
-				<div id="text">
-				我是内容
-				</div>
-			</div>
+			
+			
 		</div>
 	</body>
 </html>

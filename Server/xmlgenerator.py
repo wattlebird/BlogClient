@@ -16,5 +16,5 @@ class xmlgenerator:
 		sub_content.text = params['content']
 
 	def out(self):
-		ET.dump(self.xmltree)
+		return ET.tostring(self.xmltree,'UTF-8')
 	

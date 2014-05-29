@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block maintext %}
+<div class = "login">
+	<h2>Login</h2>
+	<form method="post">
+		<div style="display:inline-block">
+			<label for="userinput">Username:</label> 	
+			<input id="userinput" type="text" name="username">
+		</div>
+		<br/>
+		<div style="display:inline-block">
+			<label for="pswdinput">Password:<label/>
+		  	<input id = "pswdinput" type="password" name="password">
+		</div>
+		
+	 	<div class="error">
+	  		{{error}}
+	 	</div>
+ 		<input type="submit" value="登录"/>
+ 		<input type="hidden" name="prev" value="{{prev}}"/>
+	</form>
+</div>
+{% endblock %}

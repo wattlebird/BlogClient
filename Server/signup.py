@@ -3,18 +3,18 @@ import validcheck
 import secure
 import database
 import webapp2
+import urlparse
 
 class SignupHandler(head.BasicHandler):
         def get(self):
                 cookie_val = self.request.cookies.get('user')
-                cookie_page = self.request.cookies.get('prev')
                 if cookie_val:
                         if secure.check_secure_val(cookie_val):
-                                webapp2.redirect(self.request.referer)
+                                self.redirect(self.request.referer)
                         else:
                                 self.response.delete_cookie('user')
 
-                self.render("signup-form.html")
+                self.render("signup.html", prev = self.request.referer)
 
 	
         def post(self):
@@ -23,6 +23,7 @@ class SignupHandler(head.BasicHandler):
                 password = self.request.get('password')
                 verify = self.request.get('verify')
                 email = self.request.get('email')
+                previouspage = str(self.request.get('prev'))
 
                 param = dict(username = username,
                 	email = email)
@@ -49,7 +50,7 @@ class SignupHandler(head.BasicHandler):
                 	param['error_email'] = 'Invalid Email'
 
                 if have_error:
-                	self.render("signup-form.html", **param)
+                	self.render("signup.html", **param)
                 else:
                 	if email:
                 		kk = database.Users(user = username, hashed_password = secure.hashed_password(username, password),
@@ -59,9 +60,11 @@ class SignupHandler(head.BasicHandler):
                 	kk.put()
                 	cookie_val = secure.make_secure_val(username)
                 	self.response.set_cookie('user', cookie_val)
-                        cookie_page = self.request.cookies.get('prev')
-                        self.redirect('/')
-
+                        subpath = urlparse.urlsplit(previouspage)
+                        if(subpath.path=='/signup' or subpath.path=='/login'):
+                                self.redirect('/')
+                        else:
+                                self.redirect(previouspage)
 
 app = webapp2.WSGIApplication([
         ('/signup',SignupHandler)
