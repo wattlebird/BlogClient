@@ -18,26 +18,36 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>10</y>
+      <y>20</y>
       <width>211</width>
-      <height>381</height>
+      <height>391</height>
      </rect>
     </property>
     <property name="title">
-     <string>GroupBox</string>
+     <string>Article List</string>
     </property>
+    <widget class="QListWidget" name="listWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>191</width>
+       <height>321</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>10</y>
+      <y>20</y>
       <width>501</width>
-      <height>381</height>
+      <height>371</height>
      </rect>
     </property>
     <property name="title">
-     <string>GroupBox</string>
+     <string/>
     </property>
     <widget class="QLabel" name="label">
      <property name="geometry">
@@ -115,6 +125,12 @@
     </property>
     <addaction name="actionLogin"/>
     <addaction name="actionLogout"/>
+    <addaction name="separator"/>
+    <addaction name="actionSignup"/>
+    <addaction name="separator"/>
+    <addaction name="actionSync"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -127,6 +143,21 @@
   <action name="actionLogout">
    <property name="text">
     <string>Logout</string>
+   </property>
+  </action>
+  <action name="actionSignup">
+   <property name="text">
+    <string>Signup</string>
+   </property>
+  </action>
+  <action name="actionSync">
+   <property name="text">
+    <string>Sync</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
    </property>
   </action>
  </widget>
@@ -165,9 +196,42 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionSync</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>sync()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>382</x>
+     <y>247</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>382</x>
+     <y>247</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>login()</slot>
   <slot>logout()</slot>
+  <slot>sync()</slot>
  </slots>
 </ui>

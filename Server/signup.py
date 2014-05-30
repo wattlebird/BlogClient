@@ -7,10 +7,15 @@ import urlparse
 
 class SignupHandler(head.BasicHandler):
         def get(self):
+                subpath = urlparse.urlsplit(self.request.referer)
+
                 cookie_val = self.request.cookies.get('user')
                 if cookie_val:
                         if secure.check_secure_val(cookie_val):
-                                self.redirect(self.request.referer)
+                                if subpath.path=='/signup':
+                                        self.redirect('/')
+                                else:
+                                        self.redirect(self.request.referer)
                         else:
                                 self.response.delete_cookie('user')
 
@@ -61,7 +66,7 @@ class SignupHandler(head.BasicHandler):
                 	cookie_val = secure.make_secure_val(username)
                 	self.response.set_cookie('user', cookie_val)
                         subpath = urlparse.urlsplit(previouspage)
-                        if(subpath.path=='/signup' or subpath.path=='/login'):
+                        if subpath.path=='/signup' or subpath.path=='/login':
                                 self.redirect('/')
                         else:
                                 self.redirect(previouspage)

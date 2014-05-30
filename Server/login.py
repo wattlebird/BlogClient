@@ -13,7 +13,11 @@ class LoginHandler(head.BasicHandler):
                         self.redirect(self.request.referer)
                 else:
                         self.response.delete_cookie('user')
-		self.render("login.html", prev=self.request.referer)
+                if self.request.referer==None:
+                        self.render("login.html", prev='/')
+                else:
+                        self.render("login.html", prev=self.request.referer)
+		
 
 	def post(self):
 		have_error = False
@@ -43,7 +47,7 @@ class LoginHandler(head.BasicHandler):
                         cookie_val = secure.make_secure_val(username)
                         self.response.set_cookie('user', cookie_val)
                         subpath = urlparse.urlsplit(previouspage)
-                        if subpath.path=='/signup' or subpath.path=='/login':
+                        if subpath.path=='/signup' or subpath.path=='/login' or previouspage=='None':
                                 self.redirect('/')
                         else:
                                 self.redirect(previouspage)
@@ -52,7 +56,10 @@ class LoginHandler(head.BasicHandler):
 class LogoutHandler(head.BasicHandler):
         def get(self):
                 self.response.delete_cookie('user')
-                self.redirect(self.request.referer)
+                if self.request.referer==None:
+                        self.redirect('/')
+                else:
+                        self.redirect(self.request.referer)
 
 app = webapp2.WSGIApplication([
         ('/login',LoginHandler),

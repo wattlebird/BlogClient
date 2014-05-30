@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(dlgLogin, SIGNAL(sendauth(QString,QString)), this, SLOT(getauth(QString,QString)));
     connect(ui->btnPush, SIGNAL(clicked()), this, SLOT(pusharticle()));
-
+    connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(showarticle()));
 }
 
 MainWindow::~MainWindow()
@@ -49,6 +49,13 @@ void MainWindow::login(){
 void MainWindow::logout(){
     reply = netManager->get(QNetworkRequest(QUrl("http://ikewikipage.appspot.com/logout")));
     connect(reply,SIGNAL(finished()),this,SLOT(getlogoutreply()));
+}
+
+void MainWindow::sync(){
+    ui->statusBar->showMessage("syncing...");
+    QUrl xmlsource(QString("http://ikewikipage.appspot.com/api?user=").append(strUser));
+    reply = netManager->get(QNetworkRequest(xmlsource));
+    connect(reply,SIGNAL(finished()),this,SLOT(updatelist()));
 }
 
 void MainWindow::getauth(QString user, QString pw){
@@ -116,4 +123,44 @@ void MainWindow::pusharticlereply(){
                     QMessageBox::Ok).exec();
     }
     disconnect(reply,SIGNAL(finished()),this,SLOT(pusharticlereply()));
+}
+
+void MainWindow::updatelist(){
+    if(reply->error()==QNetworkReply::NoError){
+        ui->listWidget->clear();
+        articlelist.clear();
+        QXmlStreamReader xml(reply);
+        if(xml.readNextStartElement() && xml.name()=="articles"){
+            while(xml.readNextStartElement() && xml.name()=="article"){
+                Article record;
+                while(xml.readNextStartElement()){
+                    if(xml.name()=="author"){
+                        record.author = xml.readElementText();
+                    }else if(xml.name()=="date"){
+                        record.date = xml.readElementText();
+                    }else if(xml.name()=="title"){
+                        QString t = xml.readElementText();
+                        ui->listWidget->addItem(t);
+                        record.title = t;
+                    }else if(xml.name()=="content"){
+                        record.content = xml.readElementText();
+                    }
+                }
+                articlelist.push_back(record);
+            }
+        }
+        ui->listWidget->setCurrentRow(0);
+        ui->lineTitle->setText(articlelist.at(0).title);
+        ui->textContent->setPlainText(articlelist.at(0).content);
+        ui->statusBar->showMessage("Sync success!");
+    }else{
+        ui->statusBar->showMessage("Update failed!");
+    }
+    disconnect(reply,SIGNAL(finished()),this,SLOT(updatelist()));
+}
+
+void MainWindow::showarticle(){
+    int index = ui->listWidget->currentRow();
+    ui->lineTitle->setText(articlelist.at(index).title);
+    ui->textContent->setPlainText(articlelist.at(index).content);
 }
