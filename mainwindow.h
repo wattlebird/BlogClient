@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QVector>
 #include <QListWidget>
+#include <QFile>
 #include "article.h"
 #include "login2.h"
 #include "cookiejar.h"
@@ -39,7 +40,9 @@ private slots:
     void showarticle();
 
 private:
-
+    void loadLocalData();
+    void loadLocalList(const QVector<Article>& );
+    void saveLocalData();
 
     Ui::MainWindow *ui;
     QNetworkAccessManager *netManager;
@@ -48,7 +51,8 @@ private:
     Login2 *dlgLogin;
     QLabel *labelCurrentStatus;
 
-
+    //QFile localFile;
+    //QDataStream tube;
     QString strUser;
     QString strPw;
     QVector<Article> articlelist;

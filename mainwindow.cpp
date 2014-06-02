@@ -19,10 +19,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(dlgLogin, SIGNAL(sendauth(QString,QString)), this, SLOT(getauth(QString,QString)));
     connect(ui->btnPush, SIGNAL(clicked()), this, SLOT(pusharticle()));
     connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(showarticle()));
+
+    loadLocalData();
+    loadLocalList(articlelist);
 }
 
 MainWindow::~MainWindow()
 {
+    saveLocalData();
     delete ui;
 }
 
@@ -133,6 +137,7 @@ void MainWindow::updatelist(){
         if(xml.readNextStartElement() && xml.name()=="articles"){
             while(xml.readNextStartElement() && xml.name()=="article"){
                 Article record;
+                record.modified = false;
                 while(xml.readNextStartElement()){
                     if(xml.name()=="author"){
                         record.author = xml.readElementText();
@@ -163,4 +168,46 @@ void MainWindow::showarticle(){
     int index = ui->listWidget->currentRow();
     ui->lineTitle->setText(articlelist.at(index).title);
     ui->textContent->setPlainText(articlelist.at(index).content);
+}
+
+void MainWindow::loadLocalData(){
+    QFile localFile("local.dat");
+    if(localFile.exists()){
+        if(!localFile.open(QIODevice::ReadOnly)){
+            QMessageBox(QMessageBox::Warning,"Error","Open Local File Error",QMessageBox::Ok).exec();
+        }
+        QDataStream tube(&localFile);
+        tube.setVersion(QDataStream::Qt_5_2);
+        tube>>articlelist;
+    }
+
+}
+
+void MainWindow::saveLocalData(){
+    QVector<Article> local;
+    for(int i=0;i!=articlelist.size();i++){
+        if(articlelist[i].modified){
+            QMessageBox& msgbox = QMessageBox(QMessageBox::Question,"Exit",QString("The article with the title %1 has been modified. Save or not?").arg(
+                            articlelist[i].title),QMessageBox::Save|QMessageBox::Cancel);
+            msgbox.setDefaultButton(QMessageBox::Save);
+            if(msgbox.exec()==QMessageBox::Save){
+                articlelist[i].modified = false;
+                local.push_back(articlelist[i]);
+            }
+        }else{
+            local.push_back(articlelist[i]);
+        }
+    }
+    QFile localFile("local.dat");
+    localFile.open(QIODevice::WriteOnly);
+    QDataStream tube(&localFile);
+    tube.setVersion(QDataStream::Qt_5_2);
+    tube<<local;
+    localFile.flush();
+}
+
+void MainWindow::loadLocalList(const QVector<Article>& ls){
+    for(int i = 0; i!=ls.size(); i++){
+        ui->listWidget->addItem(ls[i].title);
+    }
 }
